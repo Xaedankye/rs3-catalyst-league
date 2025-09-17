@@ -39,17 +39,17 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <header className="bg-gradient-to-r from-panda-surface to-panda-card border-b border-panda-border">
+    <header className="bg-gradient-to-r from-panda-surface to-panda-card border-b border-panda-border relative">
+      <img 
+        src="/foxlayne_logo.svg" 
+        alt="Foxlayne Logo" 
+        className="absolute -top-4 left-8 w-40 h-40 z-10 object-contain"
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between py-6">
               <div className="flex items-center gap-4">
-                <img 
-                  src="/panda-logo.svg" 
-                  alt="Panda Logo" 
-                  className="w-12 h-12 flex-shrink-0"
-                />
-                <div>
-                  <h1 className="text-3xl font-bold text-panda-text">Catalyst League Tasks</h1>
+                <div className="ml-12">
+                  <h1 className="text-3xl font-bold text-panda-text">Foxlayne</h1>
                 <p className="text-panda-text-muted mt-1">
                   Track your progress in the RuneScape Catalyst League
                 </p>

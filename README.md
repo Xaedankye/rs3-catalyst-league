@@ -1,134 +1,103 @@
-# Catalyst League Task Tracker
+# Foxlayne - RuneScape Catalyst League Tracker
 
-A modern React TypeScript web application that scrapes and displays RuneScape Catalyst League tasks from the official wiki, with comprehensive filtering and sorting capabilities.
+A desktop application for tracking your progress in the RuneScape Catalyst League with real-time data from the RuneScape API.
 
 ## Features
 
-- **Live Data Sync**: Automatically fetches and updates task data from the RuneScape wiki
-- **Comprehensive Filtering**: Filter tasks by:
-  - Locality (Anachronia, Ardougne, Asgarnia, etc.)
-  - Tier (Easy, Medium, Hard, Elite, Master)
-  - Skill requirements
-  - Search query across task descriptions
-- **Advanced Sorting**: Sort by any column (locality, task, points, completion percentage)
-- **Progress Tracking**: Visual progress bars and completion statistics
-- **Auto-refresh**: Data automatically refreshes every 5 minutes
-- **Responsive Design**: Modern, mobile-friendly interface
-- **Real-time Stats**: Track total tasks, completion percentage, and points earned
+- Real-time task completion tracking
+- Player lookup and progress monitoring
+- Comprehensive task filtering
+- Dark theme with modern UI
+- Cross-platform desktop application
 
-## Technology Stack
-
-- **Frontend**: React 18 with TypeScript
-- **Build Tool**: Vite
-- **Styling**: Tailwind CSS
-- **Icons**: Lucide React
-- **Web Scraping**: Axios + Cheerio
-- **State Management**: Custom React hooks
-
-## Getting Started
+## Development
 
 ### Prerequisites
 
 - Node.js 18+ 
 - npm or yarn
 
-### Installation
+### Running in Development
 
-1. Clone the repository:
 ```bash
-git clone <repository-url>
-cd leagues
-```
-
-2. Install dependencies:
-```bash
+# Install dependencies
 npm install
+
+# Run the Electron app in development mode
+npm run electron-dev
 ```
 
-3. Start the development server:
+This will start both the Vite dev server and Electron app.
+
+### Building for Production
+
 ```bash
-npm run dev
+# Build the React app
+npm run build
+
+# Build Electron app for current platform
+npm run electron-pack
+
+# Build for specific platforms
+npm run dist-mac     # macOS (DMG)
+npm run dist-win     # Windows (NSIS installer)
+npm run dist-linux   # Linux (AppImage and DEB)
 ```
 
-4. Open your browser and navigate to `http://localhost:5173`
+## Installation
+
+📖 **For detailed installation instructions, see our [Installation Guide](docs/installation.md)**
+
+### Quick Start
+1. **Download** the latest release for your platform
+2. **Install** using the appropriate method for your OS
+3. **Launch** and start tracking your progress!
+
+### Platform Support
+- **Windows**: NSIS installer (.exe)
+- **macOS**: DMG disk image
+- **Linux**: AppImage and DEB packages
 
 ## Usage
 
-### Filtering Tasks
+📖 **For complete usage instructions, see our [User Guide](docs/user-guide.md)**
 
-- **Search**: Use the search box to find tasks by name, description, or requirements
-- **Locality**: Filter by specific game areas (e.g., Anachronia, Wilderness)
-- **Tier**: Filter by difficulty tier (Easy, Medium, Hard, Elite, Master)
-- **Skill**: Filter by required skills (e.g., Mining, Fishing, Combat)
+### Quick Start
+1. **Launch** the application
+2. **Search** for your RuneScape username
+3. **View** your real-time progress in the Catalyst League
+4. **Filter** tasks to focus on what you need
 
-### Sorting
+### Key Features
+- Real-time task completion tracking
+- Player lookup and progress monitoring
+- Comprehensive task filtering
+- Dark theme with modern UI
 
-Click on any column header to sort tasks by that column. Click again to reverse the sort order.
+## Technology Stack
 
-### Auto-refresh
+- **Frontend**: React 19, TypeScript, Tailwind CSS
+- **Desktop**: Electron
+- **Build**: Vite, electron-builder
+- **Data**: RuneScape API integration
 
-The application automatically refreshes data every 5 minutes to stay synchronized with the wiki. You can also manually refresh using the refresh button in the header.
+## Documentation
 
-## Project Structure
+📚 **Complete documentation is available in the [docs/](docs/) folder:**
 
-```
-src/
-├── components/          # React components
-│   ├── Header.tsx      # Application header with refresh controls
-│   ├── StatsCard.tsx   # Statistics display cards
-│   ├── TaskFilters.tsx # Filter controls
-│   └── TaskTable.tsx   # Main task table
-├── hooks/              # Custom React hooks
-│   └── useTasks.ts     # Task data management
-├── services/           # External service integrations
-│   └── wikiService.ts  # Wiki scraping service
-├── types/              # TypeScript type definitions
-│   └── index.ts        # Application types
-├── App.tsx             # Main application component
-└── index.css           # Global styles
-```
-
-## Data Source
-
-This application scrapes data from the official RuneScape wiki:
-- **URL**: https://runescape.wiki/w/Catalyst_League/Tasks
-- **Update Frequency**: Every 5 minutes (configurable)
-- **Caching**: 5-minute cache to reduce server load
-
-## Development
-
-### Available Scripts
-
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run lint` - Run ESLint
-
-### Adding New Features
-
-1. **New Filters**: Add filter options in `src/types/index.ts` and update `TaskFilters.tsx`
-2. **New Columns**: Add columns in `TaskTable.tsx` and update the `Task` interface
-3. **New Stats**: Add statistics in `StatsCard.tsx` and update the stats calculation
-
-## Browser Support
-
-- Chrome 90+
-- Firefox 88+
-- Safari 14+
-- Edge 90+
+- **[Installation Guide](docs/installation.md)** - Detailed installation instructions
+- **[User Guide](docs/user-guide.md)** - Complete usage instructions
+- **[FAQ](docs/faq.md)** - Frequently asked questions
+- **[Documentation Index](docs/README.md)** - Full documentation overview
 
 ## Contributing
 
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
-4. Add tests if applicable
+4. Test thoroughly
 5. Submit a pull request
 
 ## License
 
-This project is licensed under the MIT License.
-
-## Disclaimer
-
-This application is not affiliated with Jagex Ltd. or RuneScape. All game content is property of Jagex Ltd.# rs3-catalyst-league
+MIT License - see LICENSE file for details
