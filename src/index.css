@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  
+  body {
+    @apply bg-panda-bg text-panda-text;
+  }
+  
+  /* Custom scrollbar for dark theme */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-panda-surface;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-panda-border rounded-full;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-panda-accent;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-panda-accent hover:bg-panda-accent-dark text-panda-bg font-medium py-2 px-4 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-panda-accent/25;
+  }
+  
+  .btn-secondary {
+    @apply bg-panda-surface hover:bg-panda-border text-panda-text font-medium py-2 px-4 rounded-lg transition-colors duration-200 border border-panda-border;
+  }
+  
+  .card {
+    @apply bg-panda-card rounded-lg shadow-xl p-6 border border-panda-border;
+  }
+  
+  .input-field {
+    @apply w-full px-3 py-2 bg-panda-surface border border-panda-border rounded-md text-panda-text placeholder-panda-text-muted focus:ring-2 focus:ring-panda-accent focus:border-panda-accent transition-colors duration-200;
+  }
+  
+  .table-header {
+    @apply bg-panda-surface text-panda-text-muted;
+  }
+  
+  .table-row {
+    @apply bg-panda-card hover:bg-panda-surface border-b border-panda-border;
+  }
+  
+  .table-row-completed {
+    @apply bg-panda-accent/10 hover:bg-panda-accent/20 border-panda-accent/30;
+  }
+}
