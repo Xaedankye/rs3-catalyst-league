@@ -188,6 +188,15 @@ export const useTasks = () => {
       if (sortConfig.column === 'tier') {
         aValue = getTierFromPoints(a.points);
         bValue = getTierFromPoints(b.points);
+        
+        // Custom tier sorting order: Easy -> Medium -> Hard -> Elite -> Master
+        const tierOrder = { 'Easy': 1, 'Medium': 2, 'Hard': 3, 'Elite': 4, 'Master': 5 };
+        const aTierOrder = tierOrder[aValue as TaskTier] || 0;
+        const bTierOrder = tierOrder[bValue as TaskTier] || 0;
+        
+        return sortConfig.direction === 'asc' 
+          ? aTierOrder - bTierOrder
+          : bTierOrder - aTierOrder;
       } else {
         aValue = a[sortConfig.column];
         bValue = b[sortConfig.column];
