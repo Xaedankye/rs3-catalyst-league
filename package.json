@@ -20,9 +20,9 @@
     "electron-dev-wayland": "concurrently \"npm run dev\" \"wait-on http://localhost:5173 && NODE_ENV=development electron . --enable-wayland-ime --ozone-platform=wayland\"",
     "electron-pack": "npm run build && electron-builder",
     "dist": "npm run build && electron-builder --publish=never",
-    "dist-mac": "npm run build && electron-builder --mac",
-    "dist-win": "npm run build && electron-builder --win",
-    "dist-linux": "npm run build && electron-builder --linux"
+    "dist-mac": "npm run build && electron-builder --mac --publish=never",
+    "dist-win": "npm run build && electron-builder --win --publish=never",
+    "dist-linux": "npm run build && electron-builder --linux --publish=never"
   },
   "dependencies": {
     "@tailwindcss/forms": "^0.5.10",
