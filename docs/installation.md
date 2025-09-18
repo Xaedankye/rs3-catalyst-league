@@ -2,6 +2,15 @@
 
 Welcome to Foxlayne, the desktop application for tracking your RuneScape Catalyst League progress! This guide will walk you through installing Foxlayne on your system.
 
+## What's New in v1.0.0
+
+- **League Clan Progress**: Live clan leaderboard with member progress tracking
+- **Pinned User Component**: Smart navigation for large clan lists
+- **Live Grid Updates**: See results as they load, no waiting for complete data
+- **Background Updates**: Automatic refresh every 10 minutes
+- **Rate Limiting**: Intelligent API request spacing to prevent errors
+- **Smart Caching**: Optimized performance with 1-hour cache for league progress
+
 ## System Requirements
 
 - **Operating System**: Windows 10+, macOS 10.14+, or Linux (Ubuntu 18.04+)

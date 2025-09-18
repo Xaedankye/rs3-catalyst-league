@@ -42,10 +42,20 @@ Click the search box in the top-right corner and enter your exact RuneScape user
 - **Account status**: Make sure your account is active and public
 
 ### How often does the data update?
-Data updates automatically when you search for a player. The app doesn't continuously poll the API to avoid overloading RuneScape's servers.
+- **Task Tracker**: Updates when you search for a player
+- **Clan Progress**: Updates automatically every 10 minutes in the background
+- **Smart caching**: Uses 1-hour cache for league progress, 30-minute cache for clan members
+- **Rate limiting**: Prevents API overload with intelligent request spacing
 
 ### Can I track multiple characters?
 Currently, you can only view one character at a time. You can switch between characters by searching for different usernames.
+
+### How does the League Clan Progress feature work?
+The League Clan Progress feature shows your entire clan's progress in the Catalyst League:
+- **Automatic clan detection**: When you search for your player, it automatically loads your clan
+- **Live updates**: See each clan member's progress as it loads
+- **Background refresh**: Data updates automatically every 10 minutes
+- **Smart caching**: Uses intelligent caching to reduce API calls
 
 ### What if the RuneScape API is down?
 If the API is unavailable, you can still use the app in manual tracking mode. You'll need to manually mark tasks as complete, but the app will remember your progress.
@@ -97,6 +107,14 @@ Common errors and solutions:
 - **"API unavailable"**: Wait a few minutes and try again
 - **"Network error"**: Check your internet connection
 - **"Permission denied"**: Try running as administrator (Windows) or with `sudo` (Linux)
+- **"Rate limited"**: The app will automatically retry with delays
+- **"Clan not found"**: Make sure your player is in a clan and the clan name is correct
+
+### Clan Progress issues
+- **"No clan data"**: Your player might not be in a clan, or the clan name mapping needs to be updated
+- **"Slow loading"**: Large clans take time to load - the app processes members in batches
+- **"Missing members"**: Some clan members might not have league data available
+- **"Pinned component not working"**: Make sure you've searched for your own player first
 
 ## Development Questions
 

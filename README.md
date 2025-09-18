@@ -4,11 +4,14 @@ A desktop application for tracking your progress in the RuneScape Catalyst Leagu
 
 ## Features
 
-- Real-time task completion tracking
-- Player lookup and progress monitoring
-- Comprehensive task filtering
-- Dark theme with modern UI
-- Cross-platform desktop application
+- **Real-time task completion tracking** with live updates
+- **Player lookup and progress monitoring** from RuneScape API
+- **Comprehensive task filtering** by tier, category, and completion status
+- **League Clan Progress** with live leaderboard updates
+- **Pinned user component** for easy navigation in large clans
+- **Rate limiting and caching** for optimal API performance
+- **Dark theme** with modern, responsive UI
+- **Cross-platform desktop application** (Windows, macOS, Linux)
 
 ## Development
 
@@ -69,10 +72,11 @@ npm run dist-linux   # Linux (AppImage and DEB)
 4. **Filter** tasks to focus on what you need
 
 ### Key Features
-- Real-time task completion tracking
-- Player lookup and progress monitoring
-- Comprehensive task filtering
-- Dark theme with modern UI
+- **Task Tracker**: Real-time task completion tracking with filtering
+- **League Clan Progress**: Live clan leaderboard with member progress
+- **Smart Navigation**: Pinned user component for large clan lists
+- **Performance Optimized**: Rate limiting and intelligent caching
+- **Modern UI**: Dark theme with responsive design
 
 ## Technology Stack
 
