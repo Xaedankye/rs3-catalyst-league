@@ -23,8 +23,6 @@ Welcome to Foxlayne, the desktop application for tracking your RuneScape Catalys
 ### 📦 Pre-built Packages (Recommended)
 Download ready-to-install packages for your platform below.
 
-### 🔨 Build from Source
-If you prefer to build the application yourself, see our [Building Guide](building.md) for detailed instructions.
 
 ---
 
@@ -50,14 +48,6 @@ If you prefer to build the application yourself, see our [Building Guide](buildi
 2. Extract to any folder on your computer
 3. Run `Foxlayne.exe` from the extracted folder
 
-#### Method 3: Build from Source
-```bash
-# Prerequisites: Node.js 18+, Git, Visual Studio Build Tools
-git clone https://github.com/yourusername/foxlayne.git
-cd foxlayne
-npm install
-npm run dist-win
-```
 
 ### 🍎 macOS Installation
 
@@ -77,23 +67,6 @@ npm run dist-win
      - Go to System Preferences → Security & Privacy
      - Click "Open Anyway" next to the Foxlayne message
 
-#### Method 2: Homebrew (For developers)
-```bash
-# Add the tap (when available)
-brew tap yourusername/foxlayne
-
-# Install Foxlayne
-brew install --cask foxlayne
-```
-
-#### Method 3: Build from Source
-```bash
-# Prerequisites: Node.js 18+, Git, Xcode Command Line Tools
-git clone https://github.com/yourusername/foxlayne.git
-cd foxlayne
-npm install
-npm run dist-mac
-```
 
 ### 🐧 Linux Installation
 
@@ -149,15 +122,6 @@ npm run dist-mac
 #### Method 3: Snap Package (When available)
 ```bash
 sudo snap install foxlayne
-```
-
-#### Method 4: Build from Source
-```bash
-# Prerequisites: Node.js 18+, Git, build dependencies
-git clone https://github.com/yourusername/foxlayne.git
-cd foxlayne
-npm install
-npm run dist-linux
 ```
 
 ## Post-Installation Setup

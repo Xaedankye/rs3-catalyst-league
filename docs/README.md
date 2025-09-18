@@ -10,8 +10,7 @@ Welcome to the Foxlayne documentation! This folder contains all the information 
 - **[FAQ](faq.md)** - Frequently asked questions and troubleshooting
 
 ### For Developers
-- **[Building Guide](building.md)** - How to build Foxlayne from source
-- **[Development Setup](development.md)** - How to set up the development environment
+- **[Development Guide](development.md)** - How to set up the development environment
 - **[Contributing Guidelines](contributing.md)** - How to contribute to the project
 
 ## 🚀 Quick Start
@@ -25,7 +24,7 @@ Welcome to the Foxlayne documentation! This folder contains all the information 
 1. **Clone** the repository
 2. **Install** dependencies with `npm install`
 3. **Run** in development mode with `npm run electron-dev`
-4. **Read** the [Development Setup](development.md) guide
+4. **Read** the [Development Guide](development.md) for setup instructions
 
 ## 📖 Documentation Structure
 
@@ -36,7 +35,6 @@ docs/
 ├── user-guide.md         # Complete user guide and features
 ├── faq.md                # Frequently asked questions
 ├── development.md        # Development environment setup
-├── building.md           # Build and distribution instructions
 └── contributing.md       # How to contribute to the project
 ```
 
@@ -84,8 +82,7 @@ If you find documentation issues:
 - **Report problems**: Create an issue on GitHub with details
 
 ### For Developers
-- **Development setup**: Follow the [Development Setup](development.md) guide
-- **Build issues**: Check the [Building and Distribution](building.md) guide
+- **Development setup**: Follow the [Development Guide](development.md)
 - **Code questions**: Ask in GitHub discussions or create an issue
 
 ## 📊 Project Status
