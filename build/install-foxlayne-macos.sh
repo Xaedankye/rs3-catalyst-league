@@ -70,13 +70,25 @@ print_success "Download completed!"
 # Mount the DMG
 print_status "Mounting installer..."
 MOUNT_POINT=$(hdiutil attach "$DMG_FILE" | grep "Volumes" | awk '{print $3}')
-APP_PATH="$MOUNT_POINT/Foxlayne.app"
 
-if [ ! -d "$APP_PATH" ]; then
+# Try to find the app in common locations
+APP_PATH=""
+for possible_path in "$MOUNT_POINT/Foxlayne.app" "$MOUNT_POINT/Applications/Foxlayne.app" "$MOUNT_POINT"/*.app; do
+    if [ -d "$possible_path" ] && [[ "$possible_path" == *"Foxlayne.app" ]]; then
+        APP_PATH="$possible_path"
+        break
+    fi
+done
+
+if [ -z "$APP_PATH" ] || [ ! -d "$APP_PATH" ]; then
     print_error "Could not find Foxlayne.app in the installer."
+    print_status "Contents of the mounted DMG:"
+    ls -la "$MOUNT_POINT"
     hdiutil detach "$MOUNT_POINT" 2>/dev/null || true
     exit 1
 fi
+
+print_success "Found Foxlayne.app at: $APP_PATH"
 
 # Remove existing installation if it exists
 if [ -d "/Applications/Foxlayne.app" ]; then

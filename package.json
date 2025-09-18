@@ -1,7 +1,7 @@
 {
   "name": "foxlayne",
   "private": true,
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Track your progress in the RuneScape Catalyst League",
   "main": "electron/main.cjs",
   "homepage": "./",
