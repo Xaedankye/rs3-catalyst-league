@@ -89,66 +89,66 @@ fi
 
 print_success "Download completed!"
 
-# Mount the DMG
-print_status "Mounting installer..."
-MOUNT_POINT=$(hdiutil attach "$DMG_FILE" | grep "Volumes" | awk '{print $3}')
+# Open the DMG for manual installation
+print_status "Opening installer..."
+open "$DMG_FILE"
 
-# Try to find the app in common locations
-APP_PATH=""
-for possible_path in "$MOUNT_POINT/Foxlayne.app" "$MOUNT_POINT/Applications/Foxlayne.app" "$MOUNT_POINT"/*.app; do
-    if [ -d "$possible_path" ] && [[ "$possible_path" == *"Foxlayne.app" ]]; then
-        APP_PATH="$possible_path"
-        break
-    fi
-done
+print_success "DMG opened successfully!"
+echo ""
+echo "📋 Installation Instructions:"
+echo "=============================="
+echo ""
+echo "1. 🖱️  Drag 'Foxlayne.app' to the 'Applications' folder in the DMG window"
+echo "2. ⏳ Wait for the copy to complete"
+echo "3. 🗑️  Eject the DMG when finished"
+echo "4. 🚀 Launch Foxlayne from your Applications folder or Spotlight"
+echo ""
+echo "💡 Tip: If you see a 'damaged' error, run this command in Terminal:"
+echo "   xattr -d com.apple.quarantine /Applications/Foxlayne.app"
+echo ""
 
-if [ -z "$APP_PATH" ] || [ ! -d "$APP_PATH" ]; then
-    print_error "Could not find Foxlayne.app in the installer."
-    print_status "Contents of the mounted DMG:"
-    ls -la "$MOUNT_POINT"
-    hdiutil detach "$MOUNT_POINT" 2>/dev/null || true
-    exit 1
-fi
+# Wait a moment for the DMG to open
+sleep 2
 
-print_success "Found Foxlayne.app at: $APP_PATH"
-
-# Remove existing installation if it exists
+# Check if the app was installed (user might have done it manually)
 if [ -d "/Applications/Foxlayne.app" ]; then
-    print_warning "Existing Foxlayne installation found. Removing..."
-    rm -rf "/Applications/Foxlayne.app"
+    print_success "Foxlayne.app found in Applications folder!"
+    
+    # Fix Gatekeeper issues
+    print_status "Fixing macOS security settings..."
+    xattr -d com.apple.quarantine "/Applications/Foxlayne.app" 2>/dev/null || true
+    
+    print_success "Installation completed successfully!"
+    echo ""
+    echo "🎉 Foxlayne has been installed and is ready to use!"
+    echo ""
+    echo "You can now:"
+    echo "  • Launch Foxlayne from your Applications folder"
+    echo "  • Or run: open /Applications/Foxlayne.app"
+    echo "  • Or search for 'Foxlayne' in Spotlight"
+    echo ""
+    
+    # Ask if user wants to launch the app
+    read -p "Would you like to launch Foxlayne now? (y/n): " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        print_status "Launching Foxlayne..."
+        open "/Applications/Foxlayne.app"
+    fi
+else
+    print_warning "Foxlayne.app not found in Applications folder yet."
+    echo ""
+    echo "Please complete the installation by:"
+    echo "1. Dragging Foxlayne.app to the Applications folder in the DMG"
+    echo "2. Then run this command to fix security settings:"
+    echo "   xattr -d com.apple.quarantine /Applications/Foxlayne.app"
+    echo ""
 fi
-
-# Install the app
-print_status "Installing Foxlayne to Applications folder..."
-cp -R "$APP_PATH" "/Applications/"
-
-# Unmount the DMG
-hdiutil detach "$MOUNT_POINT" 2>/dev/null || true
-
-# Fix Gatekeeper issues
-print_status "Fixing macOS security settings..."
-xattr -d com.apple.quarantine "/Applications/Foxlayne.app" 2>/dev/null || true
 
 # Clean up
 rm -rf "$TEMP_DIR"
 
-print_success "Installation completed successfully!"
-echo ""
-echo "🎉 Foxlayne has been installed and is ready to use!"
-echo ""
-echo "You can now:"
-echo "  • Launch Foxlayne from your Applications folder"
-echo "  • Or run: open /Applications/Foxlayne.app"
 echo ""
 echo "For support, visit: https://github.com/Xaedankye/rs3-catalyst-league"
 echo ""
-
-# Ask if user wants to launch the app
-read -p "Would you like to launch Foxlayne now? (y/n): " -n 1 -r
-echo
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-    print_status "Launching Foxlayne..."
-    open "/Applications/Foxlayne.app"
-fi
-
 print_success "Installation complete! Enjoy tracking your Catalyst League progress! 🦊"
