@@ -41,8 +41,9 @@ function createWindow() {
     // Open DevTools in development
     mainWindow.webContents.openDevTools();
   } else {
-    // In production, the dist folder is packaged inside the app
-    const indexPath = path.join(__dirname, 'dist/index.html');
+    // In production, the dist folder is at the root of the packaged app
+    // __dirname points to the electron folder, so we need to go up one level
+    const indexPath = path.join(__dirname, '../dist/index.html');
     console.log('Loading production file:', indexPath);
     mainWindow.loadFile(indexPath).catch(err => {
       console.error('Failed to load production file:', err);
