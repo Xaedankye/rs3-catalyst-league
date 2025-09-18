@@ -2,6 +2,10 @@
 
 # Foxlayne One-Click Installer for Linux
 # This script handles everything: download, install, and setup
+#
+# Usage: ./install-foxlayne-linux.sh [version]
+# Example: ./install-foxlayne-linux.sh v1.0.5
+# If no version is specified, it will install the latest release
 
 set -e  # Exit on any error
 
@@ -63,30 +67,47 @@ fi
 
 print_status "Detected package manager: $PACKAGE_MANAGER"
 
-# Get the latest release URL
-print_status "Fetching latest release information..."
-LATEST_RELEASE=$(curl -s https://api.github.com/repos/Xaedankye/rs3-catalyst-league/releases/latest)
-
-if [ "$PACKAGE_MANAGER" = "appimage" ]; then
-    DOWNLOAD_URL=$(echo "$LATEST_RELEASE" | grep "browser_download_url.*AppImage" | cut -d '"' -f 4 | head -1)
+# Handle version parameter
+if [ -n "$1" ]; then
+    VERSION="$1"
+    print_status "Installing specific version: $VERSION"
+    RELEASE_URL="https://api.github.com/repos/Xaedankye/rs3-catalyst-league/releases/tags/$VERSION"
 else
-    DOWNLOAD_URL=$(echo "$LATEST_RELEASE" | grep "browser_download_url.*$PACKAGE_EXT" | cut -d '"' -f 4 | head -1)
+    print_status "Installing latest version..."
+    RELEASE_URL="https://api.github.com/repos/Xaedankye/rs3-catalyst-league/releases/latest"
 fi
 
-VERSION=$(echo "$LATEST_RELEASE" | grep "tag_name" | cut -d '"' -f 4)
+# Get the release information
+print_status "Fetching release information..."
+RELEASE_DATA=$(curl -s "$RELEASE_URL")
+
+if [ "$PACKAGE_MANAGER" = "appimage" ]; then
+    DOWNLOAD_URL=$(echo "$RELEASE_DATA" | grep "browser_download_url.*AppImage" | cut -d '"' -f 4 | head -1)
+else
+    DOWNLOAD_URL=$(echo "$RELEASE_DATA" | grep "browser_download_url.*$PACKAGE_EXT" | cut -d '"' -f 4 | head -1)
+fi
+
+if [ -z "$1" ]; then
+    VERSION=$(echo "$RELEASE_DATA" | grep "tag_name" | cut -d '"' -f 4)
+fi
+
+PACKAGE_FILENAME=$(echo "$DOWNLOAD_URL" | sed 's/.*\///')
 
 if [ -z "$DOWNLOAD_URL" ]; then
     print_error "Could not find download URL for your system. Please check your internet connection."
     exit 1
 fi
 
-print_success "Found latest version: $VERSION"
+print_success "Found version: $VERSION"
+print_status "Package file: $PACKAGE_FILENAME"
+print_status "Download URL: $DOWNLOAD_URL"
 
 # Create temporary directory
 TEMP_DIR=$(mktemp -d)
-PACKAGE_FILE="$TEMP_DIR/Foxlayne.$PACKAGE_EXT"
+PACKAGE_FILE="$TEMP_DIR/$PACKAGE_FILENAME"
 
 print_status "Downloading Foxlayne $VERSION..."
+print_status "Saving to: $PACKAGE_FILE"
 curl -L -o "$PACKAGE_FILE" "$DOWNLOAD_URL"
 
 if [ ! -f "$PACKAGE_FILE" ]; then
