@@ -41,8 +41,10 @@ function createWindow() {
     // Open DevTools in development
     mainWindow.webContents.openDevTools();
   } else {
-    console.log('Loading production file:', path.join(__dirname, '../dist/index.html'));
-    mainWindow.loadFile(path.join(__dirname, '../dist/index.html')).catch(err => {
+    // In production, the dist folder is packaged inside the app
+    const indexPath = path.join(__dirname, 'dist/index.html');
+    console.log('Loading production file:', indexPath);
+    mainWindow.loadFile(indexPath).catch(err => {
       console.error('Failed to load production file:', err);
     });
   }
