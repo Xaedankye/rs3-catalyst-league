@@ -42,7 +42,7 @@ export const LeagueClanLeaderboard: React.FC<LeagueClanLeaderboardProps> = ({ cu
   console.log(`🎯 LeagueClanLeaderboard render for ${clanName}, hasValidCache: ${hasValidCache}, cached: ${!!initialCachedData}`);
   
   const [clanInfo, setClanInfo] = useState<LeagueClanInfo | null>(initialCachedData);
-  const [loading, setLoading] = useState(false); // Never show full loading, always show grid
+  // Removed loading state - we always show the grid now
   const [error, setError] = useState<string | null>(null);
   const [backgroundUpdateState, setBackgroundUpdateState] = useState(clanBackgroundService.getUpdateState());
   const [sortConfig, setSortConfig] = useState<{ column: SortColumn; direction: SortDirection }>({
@@ -239,25 +239,14 @@ export const LeagueClanLeaderboard: React.FC<LeagueClanLeaderboardProps> = ({ cu
     );
   }
 
-  if (loading) {
-    return (
-      <div className="card p-8 text-center">
-        <div className="text-panda-text-muted text-lg flex items-center justify-center gap-2">
-          <RefreshCw className="h-5 w-5 animate-spin" /> Loading league progress for {clanName || 'selected player'}...
-        </div>
-        <div className="text-panda-text-muted text-sm mt-2">
-          This may take a moment as we fetch data for each clan member.
-        </div>
-      </div>
-    );
-  }
+  // Removed loading check - we always show the grid now
 
   if (error) {
     return (
       <div className="card p-8 text-center">
         <div className="text-panda-error text-lg">Error: {error}</div>
         <button
-          onClick={fetchClanData}
+          onClick={() => fetchClanData(false)}
           className="mt-4 px-4 py-2 bg-panda-accent hover:bg-panda-accent-dark text-panda-bg rounded-lg transition-colors"
         >
           Retry
@@ -369,7 +358,7 @@ export const LeagueClanLeaderboard: React.FC<LeagueClanLeaderboardProps> = ({ cu
                 Next update: {backgroundUpdateState.nextUpdate.toLocaleTimeString()}
               </div>
             )}
-            {!loading && (
+            {hasValidCache && (
               <div className="text-xs text-green-500 mt-1">
                 ✓ Cached data loaded instantly
               </div>
