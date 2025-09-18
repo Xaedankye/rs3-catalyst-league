@@ -23,6 +23,26 @@ export default defineConfig({
             console.log('Received Response from the Target:', proxyRes.statusCode, req.url);
           });
         },
+      },
+      '/api/clan': {
+        target: 'https://secure.runescape.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/clan/, '/m=clan-hiscores'),
+        secure: true,
+        followRedirects: true,
+        configure: (proxy, _options) => {
+          proxy.on('error', (err, _req, _res) => {
+            console.log('clan proxy error', err);
+          });
+          proxy.on('proxyReq', (_proxyReq, req, _res) => {
+            console.log('Sending Clan Request to the Target:', req.method, req.url);
+          });
+          proxy.on('proxyRes', (proxyRes, req, _res) => {
+            console.log('Received Clan Response from the Target:', proxyRes.statusCode, req.url);
+            // Suppress cookie warnings by removing set-cookie headers
+            delete proxyRes.headers['set-cookie'];
+          });
+        },
       }
     }
   }

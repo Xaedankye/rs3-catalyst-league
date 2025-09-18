@@ -228,6 +228,15 @@ export const useTasks = () => {
     return filteredAndSortedTasks.length;
   }, [filteredAndSortedTasks, currentPlayer, hideCompleted]);
 
+  // Calculate visible points (accounts for hideCompleted logic)
+  const visiblePoints = useMemo(() => {
+    let tasksToCount = filteredAndSortedTasks;
+    if (currentPlayer && hideCompleted) {
+      tasksToCount = filteredAndSortedTasks.filter(task => !task.completed);
+    }
+    return tasksToCount.reduce((total, task) => total + task.points, 0);
+  }, [filteredAndSortedTasks, currentPlayer, hideCompleted]);
+
   const updateFilters = useCallback((newFilters: Partial<TaskFiltersType>) => {
     setFilters(prev => ({ ...prev, ...newFilters }));
   }, []);
@@ -350,6 +359,7 @@ export const useTasks = () => {
     tasks: filteredAndSortedTasks,
     allTasks: tasks, // This should be the unfiltered tasks
     visibleTaskCount,
+    visiblePoints,
     loading,
     error,
     lastFetch,

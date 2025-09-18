@@ -1,14 +1,20 @@
+import { useState } from 'react';
 import { Header } from './components/Header';
 import { StatsCards } from './components/StatsCard';
 import { TaskFilters } from './components/TaskFilters';
 import { TaskTable } from './components/TaskTable';
+import { LeagueClanLeaderboard } from './components/LeagueClanLeaderboard';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { useTasks } from './hooks/useTasks';
+import { Users, List } from 'lucide-react';
 
 function App() {
+  const [activeTab, setActiveTab] = useState<'tasks' | 'clan'>('tasks');
+  
   const {
     tasks,
     visibleTaskCount,
+    visiblePoints,
     loading,
     error,
     lastFetch,
@@ -38,46 +44,79 @@ function App() {
             />
         
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {/* Status and Refresh */}
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
-              {error && (
-                <div className="flex items-center gap-2 text-sm text-panda-error">
-                  <div className="h-2 w-2 bg-panda-error rounded-full"></div>
-                  <span>Error: {error}</span>
-                </div>
-              )}
-              <div className="text-sm text-panda-text-muted">
-                Last updated: {lastFetch ? new Date(lastFetch).toLocaleTimeString() : 'Never'}
-              </div>
+          {/* Navigation Tabs */}
+          <div className="mb-6">
+            <div className="border-b border-panda-border">
+              <nav className="-mb-px flex space-x-8">
+                <button
+                  onClick={() => setActiveTab('tasks')}
+                  className={`flex items-center gap-2 py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                    activeTab === 'tasks'
+                      ? 'border-panda-accent text-panda-accent'
+                      : 'border-transparent text-panda-text-muted hover:text-panda-text hover:border-panda-border'
+                  }`}
+                >
+                  <List className="h-4 w-4" />
+                  Task Tracker
+                </button>
+                        <button
+                          onClick={() => setActiveTab('clan')}
+                          className={`flex items-center gap-2 py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                            activeTab === 'clan'
+                              ? 'border-panda-accent text-panda-accent'
+                              : 'border-transparent text-panda-text-muted hover:text-panda-text hover:border-panda-border'
+                          }`}
+                        >
+                          <Users className="h-4 w-4" />
+                          League Clan Progress
+                        </button>
+              </nav>
             </div>
-            <button
-              onClick={refreshTasks}
-              disabled={loading}
-              className={`flex items-center gap-2 px-4 py-2 bg-panda-accent hover:bg-panda-accent-dark text-panda-bg rounded-lg transition-all duration-200 shadow-lg hover:shadow-panda-accent/25 ${
-                loading ? 'opacity-50 cursor-not-allowed' : ''
-              }`}
-            >
-              <svg className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} fill="none" viewBox="0 0 24 24">
-                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-              <span>{loading ? 'Refreshing...' : 'Refresh'}</span>
-            </button>
           </div>
 
-          <StatsCards stats={getTaskStats} />
-          
-          <TaskFilters
-            filters={filters}
-            onFiltersChange={updateFilters}
-            onClearFilters={clearFilters}
-          />
-          
+          {/* Tab Content */}
+          {activeTab === 'tasks' && (
+            <>
+              {/* Status and Refresh */}
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-4">
+                  {error && (
+                    <div className="flex items-center gap-2 text-sm text-panda-error">
+                      <div className="h-2 w-2 bg-panda-error rounded-full"></div>
+                      <span>Error: {error}</span>
+                    </div>
+                  )}
+                  <div className="text-sm text-panda-text-muted">
+                    Last updated: {lastFetch ? new Date(lastFetch).toLocaleTimeString() : 'Never'}
+                  </div>
+                </div>
+                <button
+                  onClick={refreshTasks}
+                  disabled={loading}
+                  className={`flex items-center gap-2 px-4 py-2 bg-panda-accent hover:bg-panda-accent-dark text-panda-bg rounded-lg transition-all duration-200 shadow-lg hover:shadow-panda-accent/25 ${
+                    loading ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
+                >
+                  <svg className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  <span>{loading ? 'Refreshing...' : 'Refresh'}</span>
+                </button>
+              </div>
+
+              <StatsCards stats={getTaskStats} />
+              
+              <TaskFilters
+                filters={filters}
+                onFiltersChange={updateFilters}
+                onClearFilters={clearFilters}
+              />
+              
               <div className="mb-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <h2 className="text-xl font-semibold text-panda-text">
-                      {currentPlayer ? `${currentPlayer}'s Tasks` : 'Tasks'} ({visibleTaskCount})
+                      {currentPlayer ? `${currentPlayer}'s Tasks` : 'Tasks'} ({visibleTaskCount} tasks, {visiblePoints.toLocaleString()} points)
                     </h2>
                     {currentPlayer && (
                       <button
@@ -99,15 +138,21 @@ function App() {
                   )}
                 </div>
               </div>
-          
-          <TaskTable
-            tasks={tasks}
-            sortConfig={sortConfig}
-            onSort={updateSortConfig}
-            onToggleCompletion={toggleTaskCompletion}
-            hideCompleted={hideCompleted}
-            currentPlayer={currentPlayer}
-          />
+              
+              <TaskTable
+                tasks={tasks}
+                sortConfig={sortConfig}
+                onSort={updateSortConfig}
+                onToggleCompletion={toggleTaskCompletion}
+                hideCompleted={hideCompleted}
+                currentPlayer={currentPlayer}
+              />
+            </>
+          )}
+
+                  {activeTab === 'clan' && (
+                    <LeagueClanLeaderboard currentPlayer={currentPlayer} />
+                  )}
         </main>
       </div>
     </ErrorBoundary>

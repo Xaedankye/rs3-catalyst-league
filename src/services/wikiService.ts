@@ -9,6 +9,8 @@ export class WikiService {
   private cache: { data: Task[]; timestamp: number } | null = null;
   private playerCache: Map<string, { data: Task[]; timestamp: number }> = new Map();
   private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+  private lastRequestTime = 0;
+  private readonly MIN_REQUEST_INTERVAL = 1000; // 1 second between requests
 
   static getInstance(): WikiService {
     if (!WikiService.instance) {
@@ -17,11 +19,30 @@ export class WikiService {
     return WikiService.instance;
   }
 
+  /**
+   * Rate limiting to prevent 429 errors
+   */
+  private async rateLimit(): Promise<void> {
+    const now = Date.now();
+    const timeSinceLastRequest = now - this.lastRequestTime;
+    
+    if (timeSinceLastRequest < this.MIN_REQUEST_INTERVAL) {
+      const waitTime = this.MIN_REQUEST_INTERVAL - timeSinceLastRequest;
+      console.log(`⏳ Rate limiting: waiting ${waitTime}ms`);
+      await new Promise(resolve => setTimeout(resolve, waitTime));
+    }
+    
+    this.lastRequestTime = Date.now();
+  }
+
   async fetchTasks(): Promise<Task[]> {
     // Check cache first
     if (this.cache && Date.now() - this.cache.timestamp < this.CACHE_DURATION) {
       return this.cache.data;
     }
+
+    // Apply rate limiting
+    await this.rateLimit();
 
     try {
       const response = await axios.get(WIKI_URL, {
@@ -222,10 +243,10 @@ export class WikiService {
   async fetchPlayerTasks(playerName: string): Promise<{ tasks: Task[]; apiStatus: 'success' | 'error' | 'fallback' }> {
     console.log(`🔄 Fetching player tasks for: ${playerName}`);
     
-    // Clear player cache to ensure fresh data when switching players
-    this.clearPlayerCache(playerName);
+    // Apply rate limiting
+    await this.rateLimit();
     
-    // Check player cache first (will be empty after clearing)
+    // Check player cache first
     const cached = this.playerCache.get(playerName);
     if (cached && Date.now() - cached.timestamp < this.CACHE_DURATION) {
       console.log(`📦 Using cached data for ${playerName}`);
