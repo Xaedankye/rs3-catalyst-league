@@ -69,7 +69,6 @@
     ],
     "mac": {
       "category": "public.app-category.games",
-      "icon": "public/foxlayne_logo.svg",
       "target": [
         {
           "target": "dmg",
@@ -89,8 +88,7 @@
             "ia32"
           ]
         }
-      ],
-      "icon": "public/foxlayne_logo.svg"
+      ]
     },
     "linux": {
       "target": [
