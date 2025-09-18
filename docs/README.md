@@ -10,7 +10,7 @@ Welcome to the Foxlayne documentation! This folder contains all the information 
 - **[FAQ](faq.md)** - Frequently asked questions and troubleshooting
 
 ### For Developers
-- **[Development Guide](development.md)** - How to set up the development environment
+- **[Development Guide](development.md)** - How to set up the development environment and build from source
 - **[Contributing Guidelines](contributing.md)** - How to contribute to the project
 
 ## 🚀 Quick Start

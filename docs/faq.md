@@ -125,12 +125,6 @@ Absolutely! Foxlayne is open source. You can:
 - **Submit code**: Contribute improvements
 - **Improve documentation**: Help others learn to use the app
 
-### How do I build Foxlayne from source?
-1. **Clone the repository**: `git clone https://github.com/yourusername/foxlayne.git`
-2. **Install dependencies**: `npm install`
-3. **Run in development**: `npm run electron-dev`
-4. **Build for production**: `npm run dist`
-
 ### Can I modify Foxlayne for my own use?
 Yes! The MIT license allows you to modify and distribute Foxlayne for any purpose, including commercial use.
 
