@@ -83,7 +83,25 @@
       "entitlements": "build/entitlements.mac.plist",
       "entitlementsInherit": "build/entitlements.mac.plist",
       "notarize": false,
-      "type": "distribution"
+      "type": "distribution",
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        },
+        {
+          "x": 130,
+          "y": 360,
+          "type": "file",
+          "path": "build/README-macOS.txt"
+        }
+      ]
     },
     "win": {
       "target": [
