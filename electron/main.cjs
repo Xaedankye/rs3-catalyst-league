@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu, shell } = require('electron');
+const { app, BrowserWindow, Menu, shell, session } = require('electron');
 const path = require('path');
 
 // Check if we're in development mode
@@ -83,6 +83,17 @@ function createWindow() {
 
 // This method will be called when Electron has finished initialization
 app.whenReady().then(() => {
+  // Configure session to allow unsafe headers
+  const defaultSession = session.defaultSession;
+  defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
+    // Allow User-Agent header
+    if (details.requestHeaders['User-Agent']) {
+      callback({ requestHeaders: details.requestHeaders });
+    } else {
+      callback({ requestHeaders: details.requestHeaders });
+    }
+  });
+
   createWindow();
 
   // On macOS, re-create window when dock icon is clicked

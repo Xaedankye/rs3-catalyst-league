@@ -2,7 +2,10 @@ import axios from 'axios';
 import * as cheerio from 'cheerio';
 import type { Task } from '../types';
 
-const WIKI_URL = '/api/wiki/w/Catalyst_League/Tasks';
+// Use direct URL in Electron, proxy URL in development
+const WIKI_URL = window.location.protocol === 'file:' 
+  ? 'https://runescape.wiki/w/Catalyst_League/Tasks'
+  : '/api/wiki/w/Catalyst_League/Tasks';
 
 export class WikiService {
   private static instance: WikiService;

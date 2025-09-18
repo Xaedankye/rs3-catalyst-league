@@ -57,10 +57,12 @@ class ClanService {
     }
 
     try {
-      // Use the Vite proxy to avoid CORS issues
-      const response = await fetch(
-        `/api/clan/members_lite.ws?clanName=${encodeURIComponent(clanName)}`
-      );
+      // Use direct URL in Electron, proxy URL in development
+      const clanUrl = window.location.protocol === 'file:' 
+        ? `https://secure.runescape.com/m=clan-hiscores/members_lite.ws?clanName=${encodeURIComponent(clanName)}`
+        : `/api/clan/members_lite.ws?clanName=${encodeURIComponent(clanName)}`;
+      
+      const response = await fetch(clanUrl);
 
       if (!response.ok) {
         throw new Error(`Failed to fetch clan data: ${response.status} ${response.statusText}`);
