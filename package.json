@@ -1,7 +1,7 @@
 {
   "name": "foxlayne",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "Track your progress in the RuneScape Catalyst League",
   "main": "electron/main.cjs",
   "homepage": "./",
@@ -81,7 +81,9 @@
       "hardenedRuntime": true,
       "gatekeeperAssess": false,
       "entitlements": "build/entitlements.mac.plist",
-      "entitlementsInherit": "build/entitlements.mac.plist"
+      "entitlementsInherit": "build/entitlements.mac.plist",
+      "notarize": false,
+      "type": "distribution"
     },
     "win": {
       "target": [
