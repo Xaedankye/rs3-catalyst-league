@@ -63,6 +63,10 @@ Download ready-to-install packages for your platform below.
 
 3. **First launch**
    - Go to Applications folder and double-click Foxlayne
+   - If you see "Foxlayne is damaged and can't be opened":
+     - **Option 1 (Recommended)**: Right-click Foxlayne → "Open" → Click "Open" in dialog
+     - **Option 2**: Run in Terminal: `xattr -d com.apple.quarantine /Applications/Foxlayne.app`
+     - **Option 3**: Go to System Preferences → Security & Privacy → Click "Open Anyway"
    - If macOS shows a security warning:
      - Go to System Preferences → Security & Privacy
      - Click "Open Anyway" next to the Foxlayne message
