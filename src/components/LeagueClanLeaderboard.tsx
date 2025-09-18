@@ -42,13 +42,14 @@ export const LeagueClanLeaderboard: React.FC<LeagueClanLeaderboardProps> = ({ cu
   console.log(`🎯 LeagueClanLeaderboard render for ${clanName}, hasValidCache: ${hasValidCache}, cached: ${!!initialCachedData}`);
   
   const [clanInfo, setClanInfo] = useState<LeagueClanInfo | null>(initialCachedData);
-  const [loading, setLoading] = useState(!hasValidCache); // Only show loading if no valid cached data
+  const [loading, setLoading] = useState(false); // Never show full loading, always show grid
   const [error, setError] = useState<string | null>(null);
   const [backgroundUpdateState, setBackgroundUpdateState] = useState(clanBackgroundService.getUpdateState());
   const [sortConfig, setSortConfig] = useState<{ column: SortColumn; direction: SortDirection }>({
     column: 'earnedPoints',
     direction: 'desc',
   });
+  const [isCurrentPlayerVisible, setIsCurrentPlayerVisible] = useState(true);
 
   const fetchClanData = async (forceRefresh: boolean = false) => {
     if (!clanName) {
@@ -56,8 +57,45 @@ export const LeagueClanLeaderboard: React.FC<LeagueClanLeaderboardProps> = ({ cu
       return;
     }
 
-    setLoading(true);
     setError(null);
+    
+    // If we don't have cached data, initialize with loading members immediately
+    if (!clanInfo || forceRefresh) {
+      try {
+        // First get the basic clan member list to show the grid structure
+        const basicClanInfo = await clanService.fetchClanMembers(clanName);
+        
+        // Create initial league stats with loading state
+        const initialMembers: LeagueMemberStats[] = basicClanInfo.members.map(member => ({
+          name: member.name,
+          rank: member.rank,
+          totalTasks: 0,
+          completedTasks: 0,
+          totalPoints: 0,
+          earnedPoints: 0,
+          completionRate: 0,
+          loading: true
+        }));
+
+        const initialLeagueClanInfo: LeagueClanInfo = {
+          name: clanName,
+          members: initialMembers,
+          totalMembers: initialMembers.length,
+          lastUpdated: new Date(),
+          totalClanPoints: 0,
+          averageCompletionRate: 0
+        };
+
+        // Show the grid immediately with loading members
+        setClanInfo(initialLeagueClanInfo);
+        console.log(`📊 Initialized grid with ${initialMembers.length} loading members`);
+      } catch (err) {
+        console.error('Failed to fetch basic clan info:', err);
+        setError('Failed to fetch clan member list.');
+        return;
+      }
+    }
+
     try {
       const data = await clanService.fetchClanLeagueProgress(
         clanName, 
@@ -71,9 +109,6 @@ export const LeagueClanLeaderboard: React.FC<LeagueClanLeaderboardProps> = ({ cu
       setClanInfo(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch clan data.');
-      setClanInfo(null);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -98,13 +133,10 @@ export const LeagueClanLeaderboard: React.FC<LeagueClanLeaderboardProps> = ({ cu
         }
       });
       
-      // If no valid cached data, fetch it now
-      if (!hasValidCache) {
-        console.log(`🔄 No valid cached data found for ${clanName}, fetching...`);
-        fetchClanData(false);
-      } else {
-        console.log(`✅ Using valid cached data for ${clanName}`);
-      }
+      // Always fetch data to ensure we have the latest information
+      // If we have cached data, it will be used by the service, but we still want to refresh
+      console.log(`🔄 Fetching clan data for ${clanName}...`);
+      fetchClanData(false);
       
       return () => {
         unsubscribe();
@@ -130,6 +162,36 @@ export const LeagueClanLeaderboard: React.FC<LeagueClanLeaderboardProps> = ({ cu
     });
     return sortableItems;
   }, [clanInfo, sortConfig]);
+
+  // Track visibility of current player's row
+  useEffect(() => {
+    if (!currentPlayer || !clanInfo) {
+      setIsCurrentPlayerVisible(true);
+      return;
+    }
+
+    const currentPlayerRow = document.querySelector(`tr[data-player="${currentPlayer}"]`);
+    if (!currentPlayerRow) {
+      setIsCurrentPlayerVisible(false);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsCurrentPlayerVisible(entry.isIntersecting);
+      },
+      {
+        threshold: 0.1, // Trigger when 10% of the row is visible
+        rootMargin: '0px 0px -100px 0px' // Account for any fixed headers
+      }
+    );
+
+    observer.observe(currentPlayerRow);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [currentPlayer, clanInfo, sortedMembers]);
 
   const requestSort = (column: SortColumn) => {
     let direction: SortDirection = 'desc';
@@ -226,7 +288,7 @@ export const LeagueClanLeaderboard: React.FC<LeagueClanLeaderboardProps> = ({ cu
               </h2>
               <p className="text-panda-text-muted">
                 {clanInfo.totalMembers} members • {formatNumber(clanInfo.totalClanPoints)} total points
-                {loading && (
+                {clanInfo.members.some(m => m.loading) && (
                   <span className="ml-2 text-panda-accent">
                     • Loading: {clanInfo.members.filter(m => !m.loading).length}/{clanInfo.totalMembers} members
                   </span>
@@ -237,10 +299,9 @@ export const LeagueClanLeaderboard: React.FC<LeagueClanLeaderboardProps> = ({ cu
           <div className="flex items-center gap-2">
             <button
               onClick={() => fetchClanData(true)}
-              disabled={loading}
-              className="flex items-center gap-2 px-4 py-2 bg-panda-accent hover:bg-panda-accent-dark text-panda-bg rounded-lg transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-2 bg-panda-accent hover:bg-panda-accent-dark text-panda-bg rounded-lg transition-colors"
             >
-              <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+              <RefreshCw className="h-4 w-4" />
               Force Refresh
             </button>
             
@@ -262,7 +323,7 @@ export const LeagueClanLeaderboard: React.FC<LeagueClanLeaderboardProps> = ({ cu
         </div>
         
         {/* Loading Progress Bar */}
-        {loading && (
+        {clanInfo && clanInfo.members.some(m => m.loading) && (
           <div className="mb-6">
             <div className="flex items-center justify-between text-sm text-panda-text-muted mb-2">
               <span>Loading clan members...</span>
@@ -370,6 +431,7 @@ export const LeagueClanLeaderboard: React.FC<LeagueClanLeaderboardProps> = ({ cu
               {sortedMembers.map((member, index) => (
                 <tr 
                   key={member.name}
+                  data-player={member.name}
                   className={`hover:bg-panda-accent/5 transition-colors ${
                     member.name === currentPlayer ? 'bg-panda-accent/10 border-l-4 border-panda-accent' : ''
                   }`}
@@ -445,6 +507,73 @@ export const LeagueClanLeaderboard: React.FC<LeagueClanLeaderboardProps> = ({ cu
             </tbody>
           </table>
         </div>
+        
+        {/* Pinned User Component - Shows current player's rank when not visible */}
+        {currentPlayer && clanInfo && !isCurrentPlayerVisible && (() => {
+          const currentPlayerMember = clanInfo.members.find(m => m.name === currentPlayer);
+          const currentPlayerIndex = sortedMembers.findIndex(m => m.name === currentPlayer);
+          
+          if (!currentPlayerMember || currentPlayerIndex === -1) {
+            return null; // Don't show if player not found in clan or not in sorted list
+          }
+          
+          return (
+            <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 animate-in slide-in-from-bottom-2 duration-300">
+              <div className="bg-panda-card border border-panda-accent rounded-lg shadow-lg p-4 max-w-md backdrop-blur-sm bg-opacity-95">
+                <div className="flex items-center gap-3">
+                  <div className="flex-shrink-0">
+                    <div className="w-8 h-8 bg-panda-accent rounded-full flex items-center justify-center">
+                      <span className="text-panda-bg font-bold text-sm">
+                        #{currentPlayerIndex + 1}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-panda-text truncate">
+                        {currentPlayer}
+                      </span>
+                      <span className="px-2 py-1 text-xs bg-panda-accent text-panda-bg rounded-full">
+                        You
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-4 text-xs text-panda-text-muted mt-1">
+                      <span>{formatNumber(currentPlayerMember.earnedPoints)} points</span>
+                      <span>{currentPlayerMember.completedTasks}/{currentPlayerMember.totalTasks} tasks</span>
+                      <span>{currentPlayerMember.completionRate.toFixed(1)}%</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => {
+                        // Scroll to the current player in the table
+                        const playerRow = document.querySelector(`tr[data-player="${currentPlayer}"]`);
+                        if (playerRow) {
+                          playerRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                      }}
+                      className="flex-shrink-0 p-1 text-panda-text-muted hover:text-panda-accent transition-colors"
+                      title="Scroll to your position"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                      </svg>
+                    </button>
+                    <button
+                      onClick={() => setIsCurrentPlayerVisible(true)} // Temporarily hide the pinned component
+                      className="flex-shrink-0 p-1 text-panda-text-muted hover:text-panda-accent transition-colors"
+                      title="Dismiss"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })()}
       </div>
     </div>
   );
