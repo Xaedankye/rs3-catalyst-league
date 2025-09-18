@@ -1,8 +1,9 @@
 #!/bin/bash
 
-# Catalyst League Task Tracker - Deployment Script
+# Foxlayne - Web Deployment Script
+# Note: This script is for web deployment. For desktop apps, use the Electron build scripts.
 
-echo "🚀 Building Catalyst League Task Tracker..."
+echo "🚀 Building Foxlayne for web deployment..."
 
 # Build the application
 npm run build
