@@ -20,8 +20,26 @@ Welcome to Foxlayne, the desktop application for tracking your RuneScape Catalys
 
 ## Installation Methods
 
-### 📦 Pre-built Packages (Recommended)
-Download ready-to-install packages for your platform below.
+### 🚀 One-Click Installers (Recommended)
+The easiest way to install Foxlayne on any platform:
+
+**macOS:**
+```bash
+curl -sSL https://raw.githubusercontent.com/Xaedankye/rs3-catalyst-league/main/build/install-foxlayne-macos.sh | bash
+```
+
+**Linux:**
+```bash
+curl -sSL https://raw.githubusercontent.com/Xaedankye/rs3-catalyst-league/main/build/install-foxlayne-linux.sh | bash
+```
+
+**Windows:**
+Download and run: [install-foxlayne.bat](https://raw.githubusercontent.com/Xaedankye/rs3-catalyst-league/main/build/install-foxlayne.bat)
+
+These installers handle everything automatically: download, installation, and fixing any security issues.
+
+### 📦 Manual Installation
+If you prefer to install manually, download packages from the [Releases page](https://github.com/Xaedankye/rs3-catalyst-league/releases).
 
 
 ---
@@ -63,13 +81,8 @@ Download ready-to-install packages for your platform below.
 
 3. **First launch**
    - Go to Applications folder and double-click Foxlayne
-   - If you see "Foxlayne is damaged and can't be opened":
-     - **Quick Fix**: Open Terminal and run: `xattr -d com.apple.quarantine /Applications/Foxlayne.app`
-     - **Alternative**: Right-click Foxlayne → "Open" → Click "Open" in dialog
-     - **Last Resort**: Go to System Preferences → Security & Privacy → Click "Open Anyway"
-   - If macOS shows a security warning:
-     - Go to System Preferences → Security & Privacy
-     - Click "Open Anyway" next to the Foxlayne message
+   - If you encounter any security warnings, the one-click installer should have already fixed them
+   - If you still see issues, try the one-click installer instead
 
 
 ### 🐧 Linux Installation
