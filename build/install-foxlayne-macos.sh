@@ -2,6 +2,10 @@
 
 # Foxlayne One-Click Installer for macOS
 # This script handles everything: download, install, and fix Gatekeeper issues
+#
+# Usage: ./install-foxlayne-macos.sh [version]
+# Example: ./install-foxlayne-macos.sh v1.0.5
+# If no version is specified, it will install the latest release
 
 set -e  # Exit on any error
 
@@ -40,11 +44,26 @@ if [[ "$OSTYPE" != "darwin"* ]]; then
     exit 1
 fi
 
-# Get the latest release URL
-print_status "Fetching latest release information..."
-LATEST_RELEASE=$(curl -s https://api.github.com/repos/Xaedankye/rs3-catalyst-league/releases/latest)
-DOWNLOAD_URL=$(echo "$LATEST_RELEASE" | grep "browser_download_url.*dmg" | cut -d '"' -f 4 | head -1)
-VERSION=$(echo "$LATEST_RELEASE" | grep "tag_name" | cut -d '"' -f 4)
+# Handle version parameter
+if [ -n "$1" ]; then
+    VERSION="$1"
+    print_status "Installing specific version: $VERSION"
+    RELEASE_URL="https://api.github.com/repos/Xaedankye/rs3-catalyst-league/releases/tags/$VERSION"
+else
+    print_status "Installing latest version..."
+    RELEASE_URL="https://api.github.com/repos/Xaedankye/rs3-catalyst-league/releases/latest"
+fi
+
+# Get the release information
+print_status "Fetching release information..."
+RELEASE_DATA=$(curl -s "$RELEASE_URL")
+DOWNLOAD_URL=$(echo "$RELEASE_DATA" | grep "browser_download_url.*dmg" | cut -d '"' -f 4 | head -1)
+
+if [ -z "$1" ]; then
+    VERSION=$(echo "$RELEASE_DATA" | grep "tag_name" | cut -d '"' -f 4)
+fi
+
+DMG_FILENAME=$(echo "$DOWNLOAD_URL" | sed 's/.*\///')
 
 if [ -z "$DOWNLOAD_URL" ]; then
     print_error "Could not find download URL. Please check your internet connection."
@@ -52,12 +71,15 @@ if [ -z "$DOWNLOAD_URL" ]; then
 fi
 
 print_success "Found latest version: $VERSION"
+print_status "DMG file: $DMG_FILENAME"
+print_status "Download URL: $DOWNLOAD_URL"
 
 # Create temporary directory
 TEMP_DIR=$(mktemp -d)
-DMG_FILE="$TEMP_DIR/Foxlayne.dmg"
+DMG_FILE="$TEMP_DIR/$DMG_FILENAME"
 
 print_status "Downloading Foxlayne $VERSION..."
+print_status "Saving to: $DMG_FILE"
 curl -L -o "$DMG_FILE" "$DOWNLOAD_URL"
 
 if [ ! -f "$DMG_FILE" ]; then
