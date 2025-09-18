@@ -6,6 +6,10 @@ on:
       - 'v*'
   workflow_dispatch:
 
+permissions:
+  contents: write
+  packages: write
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -123,11 +127,9 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            dist-electron/*.AppImage
-            dist-electron/*.deb
-            dist-electron/*.exe
-            dist-electron/*.dmg
-            dist-electron/*.zip
+            artifacts/linux-builds/*
+            artifacts/windows-builds/*
+            artifacts/macos-builds/*
           generate_release_notes: true
           draft: false
           prerelease: false
