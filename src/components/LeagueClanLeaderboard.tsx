@@ -507,7 +507,7 @@ export const LeagueClanLeaderboard: React.FC<LeagueClanLeaderboardProps> = ({ cu
           }
           
           return (
-            <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 animate-in slide-in-from-bottom-2 duration-300">
+            <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 ease-in-out">
               <div className="bg-panda-card border border-panda-accent rounded-lg shadow-lg p-4 max-w-md backdrop-blur-sm bg-opacity-95">
                 <div className="flex items-center gap-3">
                   <div className="flex-shrink-0">
