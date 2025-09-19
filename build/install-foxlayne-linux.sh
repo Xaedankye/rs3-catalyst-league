@@ -50,17 +50,20 @@ if command -v apt-get &> /dev/null; then
     if [[ $(uname -m) == "x86_64" ]]; then
         PACKAGE_EXT="deb"
     else
-        print_error "Unsupported architecture. Please download manually from GitHub releases."
-        exit 1
+        print_warning "Unsupported architecture for DEB. Will use AppImage instead."
+        PACKAGE_MANAGER="appimage"
+        PACKAGE_EXT="AppImage"
     fi
 elif command -v dnf &> /dev/null; then
-    PACKAGE_MANAGER="dnf"
-    PACKAGE_EXT="rpm"
+    print_warning "RPM packages not available. Will use AppImage instead."
+    PACKAGE_MANAGER="appimage"
+    PACKAGE_EXT="AppImage"
 elif command -v pacman &> /dev/null; then
-    PACKAGE_MANAGER="pacman"
-    PACKAGE_EXT="tar.xz"
+    print_warning "Arch packages not available. Will use AppImage instead."
+    PACKAGE_MANAGER="appimage"
+    PACKAGE_EXT="AppImage"
 else
-    print_warning "Package manager not detected. Will try AppImage installation."
+    print_warning "Package manager not detected. Will use AppImage installation."
     PACKAGE_MANAGER="appimage"
     PACKAGE_EXT="AppImage"
 fi
@@ -135,8 +138,18 @@ case $PACKAGE_MANAGER in
         print_status "Installing Foxlayne AppImage..."
         INSTALL_DIR="$HOME/.local/bin"
         mkdir -p "$INSTALL_DIR"
+        
+        # Copy and make executable
         cp "$PACKAGE_FILE" "$INSTALL_DIR/foxlayne.AppImage"
         chmod +x "$INSTALL_DIR/foxlayne.AppImage"
+        
+        # Verify the AppImage is executable
+        if [ -x "$INSTALL_DIR/foxlayne.AppImage" ]; then
+            print_success "AppImage is executable and ready to run"
+        else
+            print_error "Failed to make AppImage executable"
+            exit 1
+        fi
         
         # Create desktop entry
         DESKTOP_DIR="$HOME/.local/share/applications"
@@ -152,7 +165,16 @@ Categories=Game;
 EOF
         
         print_status "AppImage installed to $INSTALL_DIR"
-        print_warning "You may need to add $INSTALL_DIR to your PATH"
+        print_status "Desktop entry created"
+        
+        # Check if ~/.local/bin is in PATH
+        if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
+            print_warning "~/.local/bin is not in your PATH"
+            print_status "Add this to your ~/.bashrc or ~/.zshrc:"
+            echo "export PATH=\"\$HOME/.local/bin:\$PATH\""
+        else
+            print_success "~/.local/bin is already in your PATH"
+        fi
         ;;
 esac
 
