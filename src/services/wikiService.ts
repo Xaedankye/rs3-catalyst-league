@@ -113,7 +113,8 @@ export class WikiService {
             if (task && points > 0) {
               // Extract task ID from the row if available
               const dataTaskId = $(row).attr('data-taskid');
-              const taskId = dataTaskId || `${region}-${area}-${task}-${index}`;
+              // Use a more unique ID that includes table index and row index
+              const taskId = dataTaskId || `${tableIndex}-${index}-${region}-${area}-${task}`.replace(/\s+/g, '-');
               
               // Debug: Log task ID generation
               if (tasks.length < 5) {
@@ -146,13 +147,17 @@ export class WikiService {
       
       console.log('Parsed', tasks.length, 'tasks from wiki');
 
+      // Remove duplicate tasks based on task content (not just ID)
+      const uniqueTasks = this.removeDuplicateTasks(tasks);
+      console.log(`Removed ${tasks.length - uniqueTasks.length} duplicate tasks, ${uniqueTasks.length} unique tasks remaining`);
+
       // Cache the results
       this.cache = {
-        data: tasks,
+        data: uniqueTasks,
         timestamp: Date.now()
       };
 
-      return tasks;
+      return uniqueTasks;
     } catch (error) {
       console.error('Error fetching tasks from wiki:', error);
       throw new Error('Failed to fetch tasks from wiki');
@@ -220,6 +225,28 @@ export class WikiService {
     
     // Return the original region if no correction needed
     return region;
+  }
+
+  /**
+   * Remove duplicate tasks based on task content
+   */
+  private removeDuplicateTasks(tasks: Task[]): Task[] {
+    const seen = new Set<string>();
+    const uniqueTasks: Task[] = [];
+
+    for (const task of tasks) {
+      // Create a unique key based on task content (not ID)
+      const taskKey = `${task.task}-${task.region}-${task.area}-${task.points}-${task.requirements}`.toLowerCase().trim();
+      
+      if (!seen.has(taskKey)) {
+        seen.add(taskKey);
+        uniqueTasks.push(task);
+      } else {
+        console.log(`🔄 Removing duplicate task: "${task.task}" in ${task.region}:${task.area}`);
+      }
+    }
+
+    return uniqueTasks;
   }
 
   clearCache(): void {
