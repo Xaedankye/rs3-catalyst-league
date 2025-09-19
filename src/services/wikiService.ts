@@ -174,7 +174,10 @@ export class WikiService {
     // Handle different locality formats with colon separator
     if (locality.includes(':')) {
       const [region, area] = locality.split(':').map(part => part.trim());
-      return { region, area };
+      
+      // Validate and correct known incorrect combinations
+      const correctedRegion = this.correctRegionForArea(region, area);
+      return { region: correctedRegion, area };
     }
     
     // Handle special cases for single-word localities
@@ -197,6 +200,26 @@ export class WikiService {
     
     // Default fallback - treat as region with General area
     return { region: locality, area: 'General' };
+  }
+
+  /**
+   * Correct region assignments for known areas that are incorrectly assigned
+   */
+  private correctRegionForArea(region: string, area: string): string {
+    // Known corrections for areas that are often misassigned
+    const areaCorrections: { [key: string]: string } = {
+      'City of Um': 'Underworld',
+      'Underworld': 'Underworld',
+      'Necromancy': 'Underworld'
+    };
+    
+    // If the area has a known correct region, use it
+    if (areaCorrections[area]) {
+      return areaCorrections[area];
+    }
+    
+    // Return the original region if no correction needed
+    return region;
   }
 
   clearCache(): void {

@@ -1,5 +1,5 @@
 import React from 'react';
-import type { TaskFiltersType } from '../types';
+import type { Task, TaskFiltersType } from '../types';
 import { SKILLS, TIER_INFO } from '../types';
 import { Search, Filter, X } from 'lucide-react';
 
@@ -7,13 +7,25 @@ interface TaskFiltersProps {
   filters: TaskFiltersType;
   onFiltersChange: (filters: Partial<TaskFiltersType>) => void;
   onClearFilters: () => void;
+  tasks?: Task[];
 }
 
 export const TaskFilters: React.FC<TaskFiltersProps> = ({
   filters,
   onFiltersChange,
-  onClearFilters
+  onClearFilters,
+  tasks = []
 }) => {
+  // Generate dynamic filter options from actual task data
+  const regions = React.useMemo(() => {
+    const uniqueRegions = Array.from(new Set(tasks.map(task => task.region).filter(Boolean)));
+    return uniqueRegions.sort();
+  }, [tasks]);
+
+  const areas = React.useMemo(() => {
+    const uniqueAreas = Array.from(new Set(tasks.map(task => task.area).filter(Boolean)));
+    return uniqueAreas.sort();
+  }, [tasks]);
   const hasActiveFilters = Object.values(filters).some(value => value !== '');
 
   return (
@@ -64,17 +76,9 @@ export const TaskFilters: React.FC<TaskFiltersProps> = ({
             className="input-field"
           >
             <option value="">All Regions</option>
-            <option value="Global">Global</option>
-            <option value="Anachronia">Anachronia</option>
-            <option value="Asgarnia">Asgarnia</option>
-            <option value="Desert">Desert</option>
-            <option value="Fremennik">Fremennik</option>
-            <option value="Kandarin">Kandarin</option>
-            <option value="Karamja">Karamja</option>
-            <option value="Misthalin">Misthalin</option>
-            <option value="Morytania">Morytania</option>
-            <option value="Tirannwn">Tirannwn</option>
-            <option value="Wilderness">Wilderness</option>
+            {regions.map(region => (
+              <option key={region} value={region}>{region}</option>
+            ))}
           </select>
         </div>
 
@@ -89,11 +93,9 @@ export const TaskFilters: React.FC<TaskFiltersProps> = ({
             className="input-field"
           >
             <option value="">All Areas</option>
-            <option value="General">General</option>
-            <option value="Mainland">Mainland</option>
-            <option value="Lunar Isles">Lunar Isles</option>
-            <option value="Burthorpe">Burthorpe</option>
-            <option value="Feldip Hills">Feldip Hills</option>
+            {areas.map(area => (
+              <option key={area} value={area}>{area}</option>
+            ))}
           </select>
         </div>
 

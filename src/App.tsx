@@ -110,6 +110,7 @@ function App() {
                 filters={filters}
                 onFiltersChange={updateFilters}
                 onClearFilters={clearFilters}
+                tasks={tasks}
               />
               
               <div className="mb-4">
